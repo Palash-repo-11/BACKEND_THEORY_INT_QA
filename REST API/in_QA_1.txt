@@ -1,0 +1,253 @@
+1️⃣ What is a REST API?
+----
+REST (Representational State Transfer) is an architectural style for building web services that use HTTP methods to perform CRUD operations on resources, identified by URLs.
+
+2️⃣ What is a Resource in REST?
+----
+A resource is any data entity exposed by the API (e.g., user, product, order).
+It is identified using a URI.
+eg-/users/123
+
+3️⃣ What are the main HTTP methods used in REST?
+----- 
+| Method | Purpose                |
+| ------ | ---------------------- |
+| GET    | Read data              |
+| POST   | Create data            |
+| PUT    | Update entire resource |
+| PATCH  | Partial update         |
+| DELETE | Remove resource        |
+
+
+4️⃣ Difference between PUT and PATCH?
+-----
+| PUT                    | PATCH                  |
+| ---------------------- | ---------------------- |
+| Replaces full resource | Updates partial fields |
+| Idempotent             | Usually idempotent     |
+
+5️⃣ What does “stateless” mean in REST?
+Answer:
+Each request contains all required information.
+Server does not store client session state.
+
+6️⃣ What is Idempotency?
+Answer:
+Multiple identical requests give the same result.
+
+Examples:
+GET → Idempotent
+PUT → Idempotent
+DELETE → Idempotent
+POST → ❌ Not idempotent
+
+🔹 HTTP STATUS CODES (VERY IMPORTANT) -----
+
+7️⃣ Common HTTP status codes?
+
+| Code | Meaning      |
+| ---- | ------------ |
+| 200  | OK           |
+| 201  | Created      |
+| 204  | No Content   |
+| 400  | Bad Request  |
+| 401  | Unauthorized |
+| 403  | Forbidden    |
+| 404  | Not Found    |
+| 409  | Conflict     |
+| 429  | Too many reqest|
+| 500  | Server Error |
+
+
+8️⃣ Difference between 401 and 403?
+
+| 401                            | 403                           |
+| ------------------------------ | ----------------------------- |
+| Authentication missing/invalid | Authenticated but not allowed |
+
+
+🔹 REST API DESIGN QUESTIONS ------
+
+9️⃣ How do you design a RESTful URL?
+
+Rules:
+Use nouns, not verbs
+Use plural resources
+Use HTTP methods
+
+❌ Bad:
+/getUserDetails
+
+✅ Good:
+/users/123
+
+🔟 How do you handle versioning in REST API?
+Methods:
+URL versioning → /api/v1/users
+Header versioning
+Query param → /users?version=1
+👉 Most common: URL versioning
+
+1️⃣1️⃣ What is HATEOAS?
+HATEOAS allows API responses to include links to related actions.
+Example:
+{
+  "id": 1,
+  "name": "Palash",
+  "links": {
+    "update": "/users/1",
+    "delete": "/users/1"
+  }
+}
+
+
+🔹 SECURITY QUESTIONS (IMPORTANT FOR NODE / BACKEND) ------
+
+1️⃣2️⃣ How do you secure a REST API?
+Answer:
+HTTPS
+JWT / OAuth
+Rate limiting
+Input validation
+CORS policy
+
+1️⃣3️⃣ What is JWT?
+Answer:
+JSON Web Token is a stateless authentication mechanism.
+
+1️⃣4️⃣ Where do you store JWT on frontend?
+
+Best practices:
+HTTP-only cookies ✅
+Avoid localStorage ❌ (XSS risk)
+
+🔹 PAGINATION, FILTERING & PERFORMANCE ----
+1️⃣5️⃣ How do you implement pagination?
+Answer:
+Using query params:
+
+/users?page=2&limit=10
+
+1️⃣6️⃣ Difference between Offset and Cursor pagination?
+
+Definition:
+Offset pagination retrieves data by skipping a specific number of records (OFFSET) and then limiting the result (LIMIT).
+
+👉 It is page-number–based.
+
+Example:
+
+SELECT * FROM users
+ORDER BY id
+LIMIT 10 OFFSET 20;
+
+➡️ Skips first 20 records and returns next 10.
+
+🔹 Cursor Pagination
+
+Definition:
+Cursor pagination retrieves data based on a reference point (cursor), such as the last seen id or timestamp.
+
+👉 It is pointer-based, not page-number–based.
+Example:
+SELECT * FROM users
+WHERE id > 20
+ORDER BY id
+LIMIT 10;
+➡️ Fetches next 10 records after id = 20.
+
+| Feature          | Offset Pagination                   | Cursor Pagination       |
+| ---------------- | ----------------------------------- | ----------------------- |
+| Pagination Type  | Page-based                          | Cursor-based            |
+| Performance      | Slower for large datasets           | Very fast               |
+| Data Consistency | ❌ Can cause duplicates/missing data | ✅ Consistent            |
+| Use Case         | Small datasets, admin panels        | Large-scale apps, feeds |
+| Implementation   | Simple                              | Slightly complex        |
+
+
+1️⃣7️⃣ How do you improve REST API performance?
+Answer:
+Caching (Redis)
+Gzip compression
+Pagination
+DB indexing
+Rate limiting
+
+🔹 ERROR HANDLING & VALIDATION ------
+1️⃣8️⃣ How should error responses look?
+Answer:
+{
+  "status": 400,
+  "message": "Invalid email",
+  "errorCode": "INVALID_INPUT"
+}
+1️⃣9️⃣ How do you validate API requests?
+Answer:
+Schema validation (Joi, Zod)
+Required fields check
+Data type validation
+
+🔹 ADVANCED REST API QUESTIONS -----
+2️⃣0️⃣ REST vs SOAP?
+🔹 REST (Representational State Transfer)
+Definition:
+REST is an architectural style for building web APIs that uses standard HTTP methods to perform operations on resources.
+
+Key Idea:
+👉 Everything is a resource (users, orders, products) identified by URLs.
+
+Example (REST API):
+
+GET /api/users/10 HTTP/1.1
+Host: example.com
+
+
+Response (JSON):
+
+{
+  "id": 10,
+  "name": "Palash",
+  "email": "palash@example.com"
+}
+
+🔹 SOAP (Simple Object Access Protocol)
+
+Definition:
+SOAP is a strict protocol for exchanging structured information using XML with predefined standards.
+
+Key Idea:
+👉 Follows WSDL contract and strict rules.
+
+Example (SOAP Request):
+
+<soap:Envelope>
+  <soap:Body>
+    <GetUser>
+      <UserId>10</UserId>
+    </GetUser>
+  </soap:Body>
+</soap:Envelope>
+
+
+Response (XML):
+
+<GetUserResponse>
+  <User>
+    <Id>10</Id>
+    <Name>Palash</Name>
+  </User>
+</GetUserResponse>
+
+
+| Feature     | REST                | SOAP               |
+| ----------- | ------------------- | ------------------ |
+| Type        | Architectural style | Protocol           |
+| Data Format | JSON (mostly)       | XML only           |
+| Performance | Fast, lightweight   | Slower, heavy      |
+| Ease of Use | Easy                | Complex            |
+| Security    | HTTPS, OAuth, JWT   | WS-Security        |
+| Flexibility | High                | Low (strict rules) |
+| Contract    | Optional            | Mandatory (WSDL)   |
+
+
+
