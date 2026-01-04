@@ -1,0 +1,198 @@
+1>What is Node.js?
+2>Is Node.js single-threaded or multi-threaded? how its handle asyncronous operation?
+3> What is the event loop? 
+        --->
+        The event loop is a programming concept used to handle asynchronous operations—tasks that take time to complete—without blocking the rest of a program. It’s most commonly associated with JavaScript, but the idea exists in many environments (browsers, Node.js, Python’s asyncio, etc.).
+
+        The core idea (in plain terms)
+
+        The event loop lets a program:
+
+        Start a long-running task (like fetching data or waiting for user input)
+
+        Keep doing other work while that task runs
+        Come back to the result later when it’s ready All of this happens while usually running on a single main thread.
+
+        How it works (step by step)
+
+        In JavaScript (browser or Node.js), the runtime has several parts:
+
+        1. Call Stack
+        Keeps track of the functions currently being executed
+        Runs code synchronously, one function at a time
+
+        2. Web APIs / Background APIs
+        Handle async tasks like:
+        setTimeout
+        HTTP requests
+        DOM events
+        These run outside the call stack
+
+        3. Task Queues
+        When async work finishes, callbacks are placed into queues:
+        Macrotask queue (tasks)
+        setTimeout, setInterval, DOM events
+        Microtask queue
+        Promise.then, queueMicrotask, MutationObserver
+
+        4. Event Loop (the coordinator)
+        The event loop continuously:
+        Checks if the call stack is empty
+        Runs all microtasks in the microtask queue
+        Runs one macrotask
+        Repeats forever
+        Visual flow
+        Call Stack (empty?)
+        ↓
+        Microtask Queue (run all)
+        ↓
+        Macrotask Queue (run one)
+        ↓
+        Repeat
+
+        Why this matters
+
+        It explains things like:
+
+        console.log('A');
+        setTimeout(() => console.log('B'), 0);
+        Promise.resolve().then(() => console.log('C'));
+        console.log('D');
+
+        Output:
+        A
+        D
+        C
+        B
+
+        Why?
+        A and D run immediately
+        Promise (C) goes to the microtask queue
+        setTimeout (B) goes to the macrotask queue
+        Microtasks always run before macrotasks
+        Key benefits of the event loop
+        Non-blocking I/O
+        Efficient use of a single thread
+        Responsive UIs and scalable servers
+
+4>Difference between require() and import .
+5>What is package.json?
+6>What are modules in Node.js?
+7>What is npm? Difference between dependencies and devDependencies
+8>What is process.env?
+9>What is middleware in Node.js?
+10>What is __dirname and __filename?
+11>Explain non-blocking I/O with example
+12>How does the event loop work (phases)?
+  ---->
+    Step 1: Call Stack
+    │
+    │ Execute all synchronous code line by line
+    │
+    Step 2: Web APIs / Background APIs
+    │
+    │ Async operations (timers, I/O, HTTP requests) are sent here
+    │ Execution happens outside the main thread
+    │
+    Step 3: Queues
+    │
+    │ ↓ Microtask Queue (high priority)
+    │    - process.nextTick()
+    │    - Promise.then()
+    │    - queueMicrotask()
+    │
+    │ ↓ Macrotask Queue (phase-based)
+    │    - Timers (setTimeout, setInterval)
+    │    - I/O callbacks
+    │    - Check (setImmediate)
+    │    - Close callbacks
+    │
+    Step 4: Event Loop
+    │
+    │ 1. Check if Call Stack is empty
+    │ 2. Run all Microtasks
+    │ 3. Run ONE Macrotask (from current phase)
+    │ 4. Repeat steps continuously
+    │
+    Step 5: Back to Call Stack
+    │
+    │ Callbacks from queues are pushed onto the Call Stack
+    │ and executed line by line
+
+
+    ----->
+    Call Stack  → run sync code
+    Web APIs    → execute async tasks
+    Queues      → wait for turn (microtasks first)
+    Event Loop  → coordinate queue → call stack
+    Call Stack  → execute async callbacks
+
+13>What is callback hell and how to avoid it?
+    ---->
+    Callback hell (also called the pyramid of doom) happens when you nest many callbacks inside each other to handle asynchronous operations, making code hard to read, maintain, and debug.
+    What callback hell looks like 😬
+    getUser(id, (err, user) => {
+    if (err) return handleError(err);
+
+    getOrders(user.id, (err, orders) => {
+        if (err) return handleError(err);
+
+        getPayments(orders[0].id, (err, payments) => {
+        if (err) return handleError(err);
+
+        processPayment(payments, (err, result) => {
+            if (err) return handleError(err);
+            console.log(result);
+        });
+        });
+    });
+    });
+
+14>What are streams? Types of streams 
+    ----->
+    Streams are a way to read or write data piece by piece (in chunks) instead of loading the entire data into memory at once. They’re especially useful for large files, network data, and real-time processing.
+    Why streams exist
+
+    Without streams ❌:
+
+    const data = fs.readFileSync('large-video.mp4'); // loads entire file
+
+    With streams ✅:
+
+    fs.createReadStream('large-video.mp4')
+    .pipe(res);
+
+    Benefits:
+    Lower memory usage
+    Faster processing
+    Handles large data efficiently
+
+15> Difference between spawn and fork.
+    ---->
+    In Node.js, spawn and fork are both used to create child processes, but they serve different purposes and have different capabilities.
+
+    High-level difference
+    | Feature               | `spawn()`                    | `fork()`                       |
+| Purpose               | Run any system command       | Run another Node.js script     |
+| IPC (message passing) | ❌ Not built-in               | ✅ Built-in                     |
+| Data type             | Streams (`stdout`, `stderr`) | Messages (`process.send`)      |
+| Use case              | Shell commands, binaries     | Worker processes, CPU-heavy JS |
+| Module                | `child_process`              | `child_process`                |
+
+
+
+16>What is clustering in Node.js?
+17>how clustor is different from worker threads in nodejs ?
+    ---->
+    Cluster = multiple Node.js processes
+    Worker Threads = multiple threads inside one Node.js process
+
+18> How does Node handle concurrency?
+19>What is buffer?
+    ---->
+    A Buffer is a data structure used to handle raw binary data directly in memory. In Node.js, the Buffer class lets you work with bytes—things like files, network packets, images, or streams—where data isn’t just plain text or JavaScript objects.
+    Buffer.from('Hello', 'utf8');
+20> What is setImmediate() vs setTimeout()?
+    ----> 
+    both are macrotask 
+    setImmediate() have the more precidence over setTimeout() in the macro

@@ -1,0 +1,93 @@
+1>What is Express.js?
+2>Difference between Node.js and Express.js
+3>What is middleware in Express?
+4>What are req and res?
+5>Difference between res.send() and res.json()
+6>What is routing in Express?
+7>How do you handle 404 errors in Express?
+    --->
+    In Express, you handle 404 errors by adding a catch-all middleware that runs after all your routes. If no route matches, this middleware sends a 404 response.
+    app.use((req, res) => {
+    res.status(404).send('404 Not Found');
+    });
+
+8> What is app.use()?
+    ----> 
+    In Express, app.use() is used to register middleware—functions that run during the request–response lifecycle.
+
+9>What is body-parser? Is it still required?
+10> How do you serve static files in Express?
+    ---> 
+    In Express, you serve static files using the built-in middleware express.static().
+
+    import express from 'express';
+    const app = express();
+    app.use(express.static('public'));
+    app.listen(3000);
+
+11>How does Express middleware execution flow work?
+12>Difference between app.use() and app.get() .
+13> How do you handle errors in Express?
+    ------>
+    app.use((err, req, res, next) => {
+        console.error(err.stack); // log error
+        res.status(500).send('Something broke!');
+    });
+
+14> How do you validate request data?
+15> How do you secure an Express API?
+    ------->
+    Use HTTPS – Encrypts data in transit to prevent eavesdropping.
+
+    Authentication – Verify the user’s identity using JWT, OAuth, or API keys.
+
+    Authorization – Control what authenticated users can access based on roles/permissions.
+
+    Input validation & sanitization – Prevent injections and malicious input from clients.
+
+    Secure HTTP headers – Use helmet to set headers like X-Frame-Options and Strict-Transport-Security.
+
+    Rate limiting / throttling – Limit requests per IP to prevent brute-force and DoS attacks.
+
+    CORS configuration – Restrict which domains can access your API.
+
+    Hide sensitive errors – Don’t expose stack traces or internal information in production.
+
+    Secure cookies & sessions – Use httpOnly, secure, and sameSite flags.
+
+    Logging & monitoring – Track suspicious activity and failed requests.
+
+    Keep dependencies updated – Avoid vulnerabilities by running npm audit and updating packages.
+
+    Advanced protections (optional) – CSRF tokens, CSP headers, IP whitelisting for critical routes.
+
+16> What is CORS? How to handle it?
+17> How do you handle file uploads in Express?
+    -----> multer 
+    chunks
+18> What is rate limiting?
+19> How do you structure a large Express application? 
+    ----->
+    project/
+    │
+    ├─ server.js             # Entry point
+    ├─ package.json
+    ├─ config/
+    │  └─ db.js             # DB connection & configs
+    ├─ routes/
+    │  ├─ index.js           # Root router
+    │  ├─ users.js           # Users routes
+    │  └─ products.js        # Products routes
+    ├─ controllers/          # Business logic
+    │  ├─ userController.js
+    │  └─ productController.js
+    ├─ models/               # DB models
+    │  ├─ userModel.js
+    │  └─ productModel.js
+    ├─ middleware/           # Custom middleware
+    │  ├─ auth.js
+    │  └─ errorHandler.js
+    ├─ utils/                # Utility/helper functions
+    │  └─ logger.js
+    └─ uploads/              # Uploaded files (if any)
+
