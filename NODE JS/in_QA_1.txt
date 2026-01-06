@@ -196,3 +196,5 @@
     ----> 
     both are macrotask 
     setImmediate() have the more precidence over setTimeout() in the macro
+21> What happens when you block the event loop?
+
